@@ -15,14 +15,14 @@ public class AddAddressService
         _userRepository = userRepository;
     }
 
-    public async Task<Address> AddAddressAsync(int userId, AddressDTO addressDto)
+    public async Task<Address> AddAddressAsync(CreateAddressDTO addressDto)
     {
-        var user = await _userRepository.GetUserByIdAsync(userId);
+        var user = await _userRepository.GetUserByIdAsync(addressDto.UserId);
         if (user == null) return null;
 
         var address = new Address
         {
-            UserId = userId,
+            UserId = addressDto.UserId,
             City = addressDto.City,
             State = addressDto.State,
             Region = addressDto.Region,

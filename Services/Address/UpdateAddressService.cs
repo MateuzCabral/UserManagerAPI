@@ -13,7 +13,7 @@ public class UpdateAddressService
         _addressRepository = addressRepository;
     }
 
-    public async Task<Address> UpdateAddressAsync(int addressId, AddressDTO addressDto)
+    public async Task<Address> UpdateAddressAsync(int addressId, UpdateAddressDto addressDto)
     {
         var address = await _addressRepository.GetAddressByIdAsync(addressId);
         if (address != null)

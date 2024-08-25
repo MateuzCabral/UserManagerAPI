@@ -52,14 +52,17 @@ public class AddressController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult> AddAddress(int userId, AddressDTO addressDto)
+    public async Task<ActionResult> AddAddress(CreateAddressDTO addressDto)
     {
-        var address = await _addAddressService.AddAddressAsync(userId, addressDto);
-        return Ok(new { message = "Address added successfully" });
+        var address = await _addAddressService.AddAddressAsync(addressDto);
+
+        if (address == null) return NotFound("Usuário não encontrado");
+
+        return Ok(address);
     }
 
     [HttpPut("update/{addressId}")]
-    public async Task<ActionResult> UpdateAddres(int addressId, AddressDTO addressDto)
+    public async Task<ActionResult> UpdateAddres(int addressId, UpdateAddressDto addressDto)
     {
         var addressExist = await _getAddressByIdService.GetAddressByIdAsync(addressId);
 
