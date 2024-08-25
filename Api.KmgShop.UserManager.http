@@ -1,0 +1,6 @@
+@Api.KmgShop.UserManager_HostAddress = http://localhost:5150
+
+GET {{Api.KmgShop.UserManager_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
