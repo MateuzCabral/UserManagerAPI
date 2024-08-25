@@ -14,7 +14,10 @@ public class DeleteUserService
 
     public async Task<User> DeleteUserAsync(int userId)
     {
-        var user = await _userRepository.DeleteUserAsync(userId);
+        var user = await _userRepository.GetUserByIdAsync(userId);
+        if(user == null) return null;
+
+        await _userRepository.DeleteUserAsync(user);
         return user;
     }
 }

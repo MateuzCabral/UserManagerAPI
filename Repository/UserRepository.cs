@@ -41,14 +41,10 @@ public class UserRepository : IUserRepository
     }
 
     // Deletar Usuario
-    public async Task<User> DeleteUserAsync(int userId)
+    public async Task<User> DeleteUserAsync(User user)
     {
-        var user = await _context.Users.FindAsync(userId);
-        if (user != null)
-        {
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-        }
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
         return user;
     }
 

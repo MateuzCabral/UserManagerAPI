@@ -72,14 +72,8 @@ public class UserController : ControllerBase
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(int userId)
     {
-        var userExist = await _getByIdService.GetUserByIdAsync(userId);
-
-        if (userExist == null)
-        {
-            return NotFound("Usuário não encontrado");
-        }
-
-        await _deleteUserService.DeleteUserAsync(userId);
-        return Ok("Usuário deletado com Sucesso");
+        var user = await _deleteUserService.DeleteUserAsync(userId);
+        if (user == null) return NotFound("Usuário não encontrado");
+        return Ok($"Usuário deletado com sucesso");
     }
 }
