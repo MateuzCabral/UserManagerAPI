@@ -1,16 +1,12 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Api.KmgShop.UserManager.Models;
+namespace Api.KmgShop.UserManager.DTOs;
 
-public class Address
+public class CreateAddressDTO
 {
-    public int AddressId { get; set; }
     public string City { get; set; }
     public string State { get; set; }
     public string Region { get; set; }
     public string CEP { get; set; }
     public int UserId { get; set; }
-    [JsonIgnore]
-    public User User { get; set; }
-
 }
