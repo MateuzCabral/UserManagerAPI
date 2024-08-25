@@ -74,6 +74,6 @@ public class UserController : ControllerBase
     {
         var user = await _deleteUserService.DeleteUserAsync(userId);
         if (user == null) return NotFound("Usuário não encontrado");
-        return Ok($"Usuário deletado com sucesso");
+        return Ok("Usuário deletado com sucesso");
     }
 }
