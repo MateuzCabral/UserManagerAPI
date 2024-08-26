@@ -9,6 +9,7 @@ using Api.KmgShop.UserManager.Services.GetAllAddress;
 using Api.KmgShop.UserManager.Services.GetAllUser;
 using Api.KmgShop.UserManager.Services.UpdateAddress;
 using Api.KmgShop.UserManager.Services.UpdateUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.KmgShop.UserManager.Controller;
@@ -32,6 +33,7 @@ public class AddressController : ControllerBase
         _deleteAddressService = deleteAddressService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult> GetAllAddress()
     {
@@ -40,46 +42,53 @@ public class AddressController : ControllerBase
         return Ok(address);
     }
 
+    // Só o proprio usuário consegue ver
     [HttpGet("get/{addressId}")]
     public async Task<ActionResult> GetAddressById(int addressId)
     {
-        var address = await _getAddressByIdService.GetAddressByIdAsync(addressId);
-        if (address != null)
-        {
-            return Ok(address);
-        }
-        return NotFound("Endereço não encontrado");
+        var address = await _getAddressByIdService.GetAddressByIdAsync(addressId, User);
+        if (address == null) return NotFound("Endereço não encontrado ou permissão negada");
+        
+        return Ok(address);
+        
+        
     }
 
+    // O id do user pega do proprio token de login
+    [Authorize]
     [HttpPost("register")]
     public async Task<ActionResult> AddAddress(CreateAddressDTO addressDto)
     {
-        var address = await _addAddressService.AddAddressAsync(addressDto);
+        var address = await _addAddressService.AddAddressAsync(addressDto, User);
 
-        if (address == null) return NotFound("Usuário não encontrado");
+        if (address == null) return NotFound("Usuário não encontrado ou token inválido");
 
         return Ok(address);
     }
 
-    [HttpPut("update/{addressId}")]
+    //Apenas o proprio usuario pode atualizar seu proprio endereço
+    [Authorize]
+    [HttpPatch("update/{addressId}")]
     public async Task<ActionResult> UpdateAddres(int addressId, UpdateAddressDto addressDto)
     {
-        var addressExist = await _getAddressByIdService.GetAddressByIdAsync(addressId);
+        var address = await _updateAddressService.UpdateAddressAsync(addressId, addressDto, User);
 
-        if (addressExist == null)
+        if (address == null)
         {
-            return NotFound("Endereço não encontrado");
+            return NotFound("Endereço não encontrado ou permissão negada");
         }
 
-        await _updateAddressService.UpdateAddressAsync(addressId, addressDto);
         return Ok("Endereço Atualizado com Sucesso");
     }
 
+
+    //Apenas o proprio usuario pode deletar seu proprio endereço
+    [Authorize]
     [HttpDelete("delete/{addressId}")]
     public async Task<IActionResult> DeleteAddress(int addressId)
     {
-        var address = await _deleteAddressService.DeleteAddressAsync(addressId);
-        if (address == null) return NotFound("Endereço não encontrado");
+        var address = await _deleteAddressService.DeleteAddressAsync(addressId, User);
+        if (address == null) return NotFound("Endereço não encontrado ou permissão negada");
         return Ok("Endereço deletado com sucesso");
     }
 

@@ -8,5 +8,4 @@ public class CreateAddressDTO
     public string State { get; set; }
     public string Region { get; set; }
     public string CEP { get; set; }
-    public int UserId { get; set; }
 }

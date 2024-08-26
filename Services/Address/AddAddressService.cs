@@ -1,6 +1,7 @@
 ﻿using Api.KmgShop.UserManager.DTOs;
 using Api.KmgShop.UserManager.Models;
 using Api.KmgShop.UserManager.Repository;
+using System.Security.Claims;
 
 namespace Api.KmgShop.UserManager.Services.AddAddress;
 
@@ -15,14 +16,14 @@ public class AddAddressService
         _userRepository = userRepository;
     }
 
-    public async Task<Address> AddAddressAsync(CreateAddressDTO addressDto)
+    public async Task<Address> AddAddressAsync(CreateAddressDTO addressDto, ClaimsPrincipal userClaims)
     {
-        var user = await _userRepository.GetUserByIdAsync(addressDto.UserId);
-        if (user == null) return null;
+        int idUser = int.Parse(userClaims.FindFirstValue("id"));
+        if (idUser == null) return null;
 
         var address = new Address
         {
-            UserId = addressDto.UserId,
+            UserId = idUser,
             City = addressDto.City,
             State = addressDto.State,
             Region = addressDto.Region,
