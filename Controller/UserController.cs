@@ -1,5 +1,4 @@
 ﻿using Api.KmgShop.UserManager.DTOs;
-using Api.KmgShop.UserManager.Services;
 using Api.KmgShop.UserManager.Services.CreateUser;
 using Api.KmgShop.UserManager.Services.DeleteUser;
 using Api.KmgShop.UserManager.Services.GetAllUser;

@@ -107,7 +107,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // Certifique-se de usar a autenticação
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

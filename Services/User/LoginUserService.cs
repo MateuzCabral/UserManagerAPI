@@ -29,11 +29,11 @@ public class LoginUserService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim("ID",user.UserId.ToString()),
-                new Claim("FirstName",user.FirstName),
-                new Claim("LastName",user.LastName),
-                new Claim("Email",user.Email),
-                new Claim("Role",user.Role.ToString()),
+                new Claim("id",user.UserId.ToString()),
+                new Claim("firstname",user.FirstName),
+                new Claim("lastname",user.LastName),
+                new Claim("email",user.Email),
+                new Claim("role",user.Role.ToString()),
             }),
             Expires = DateTime.UtcNow.AddHours(2),
             Issuer = _configuration["Jwt:Issuer"],
