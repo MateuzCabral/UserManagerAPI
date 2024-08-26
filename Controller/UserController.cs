@@ -60,25 +60,29 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPut("{userId}")]
-    public async Task<ActionResult> UpdateUser(int userId, UserDTO userDto)
+    //Apenas o proprio usuario pode atualizar seu usuario
+    [Authorize]
+    [HttpPatch("update")]
+    public async Task<ActionResult> UpdateUser(UserDTO userDto)
     {
-        var userExist = await _getByIdService.GetUserByIdAsync(userId);
 
-        if(userExist == null)
+        var user = await _updateUserService.UpdateUserAsync(userDto, User);
+
+        if(user == null)
         {
-            return NotFound("Usuário não encontrado");
+            return NotFound("Usuário não encontrado ou permissão negada");
         }
 
-        await _updateUserService.UpdateUserAsync(userId, userDto);
         return Ok("Usuário Atualizado com Sucesso");
     }
 
+    //Apenas o proprio usuario pode deletar sua conta
+    [Authorize]
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(int userId)
     {
-        var user = await _deleteUserService.DeleteUserAsync(userId);
-        if (user == null) return NotFound("Usuário não encontrado");
+        var user = await _deleteUserService.DeleteUserAsync(userId, User);
+        if (user == null) return NotFound("Usuário não encontrado ou permissão negada");
         return Ok("Usuário deletado com sucesso");
     }
 
