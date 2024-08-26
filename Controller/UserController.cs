@@ -4,7 +4,9 @@ using Api.KmgShop.UserManager.Services.CreateUser;
 using Api.KmgShop.UserManager.Services.DeleteUser;
 using Api.KmgShop.UserManager.Services.GetAllUser;
 using Api.KmgShop.UserManager.Services.GetByIdUser;
+using Api.KmgShop.UserManager.Services.LoginUser;
 using Api.KmgShop.UserManager.Services.UpdateUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.KmgShop.UserManager.Controller;
@@ -18,16 +20,19 @@ public class UserController : ControllerBase
     private readonly CreateUserService _createUserService;
     private readonly UpdateUserService _updateUserService;
     private readonly DeleteUserService _deleteUserService;
+    private readonly LoginUserService _loginUserService;
 
-    public UserController(GetAllUserService getAllUserService, GetUserByIdService getByIdService, CreateUserService createUserService, UpdateUserService updateUserService, DeleteUserService deleteUserService)
+    public UserController(GetAllUserService getAllUserService, GetUserByIdService getByIdService, CreateUserService createUserService, UpdateUserService updateUserService, DeleteUserService deleteUserService, LoginUserService loginUserService)
     {
         _getAllUserService = getAllUserService;
         _getByIdService = getByIdService;
         _createUserService = createUserService;
         _updateUserService = updateUserService;
         _deleteUserService = deleteUserService;
+        _loginUserService = loginUserService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult> GetAllUser()
     {
@@ -36,6 +41,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("{userId}")]
     public async Task<ActionResult> GetUserById(int userId)
     {
@@ -75,5 +81,13 @@ public class UserController : ControllerBase
         var user = await _deleteUserService.DeleteUserAsync(userId);
         if (user == null) return NotFound("Usuário não encontrado");
         return Ok("Usuário deletado com sucesso");
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginUser(LoginDTO loginDto)
+    {
+        var user = await _loginUserService.LoginAsync(loginDto);
+        if (user == null) return BadRequest("Email ou Senha Incorreto");
+        return Ok(user);
     }
 }
